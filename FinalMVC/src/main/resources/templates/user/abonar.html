@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Abonar Dinero</title>
+    <style>
+        body {
+            background: #121212;
+            color: #fff;
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .form-container {
+            background: #1e1e1e;
+            padding: 30px 40px;
+            border-radius: 10px;
+            width: 100%;
+            max-width: 600px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #66c0f4;
+        }
+
+        label {
+            display: block;
+            margin-top: 15px;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #ccc;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            background: #2a2a2a;
+            color: #fff;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            background: #333;
+            border: 1px solid #66c0f4;
+        }
+
+        input.invalid {
+            border: 1px solid #ff6b6b !important;
+        }
+
+        button {
+            display: block;
+            width: 100%;
+            margin-top: 30px;
+            padding: 14px;
+            background: #66c0f4;
+            color: #121212;
+            font-size: 15px;
+            font-weight: bold;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #7dd3ff;
+        }
+
+        .back-button {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #aaa;
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.3s;
+        }
+
+        .back-button:hover {
+            color: #66c0f4;
+        }
+
+        .message {
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .success { color: #7dd3ff; }
+        .error { color: #ff6b6b; }
+
+        .exp-container {
+            display: flex;
+            gap: 10px;
+        }
+
+        .exp-container input {
+            width: 50%;
+        }
+    </style>
+</head>
+<body>
+
+<div class="form-container">
+    <h2>Abonar Dinero</h2>
+
+    <form th:action="@{/user/abonar}" method="post" onsubmit="return validarFormulario();">
+        <label for="tarjeta">Número de tarjeta (16 dígitos):</label>
+        <input type="text" id="tarjeta" name="tarjeta" maxlength="19" required placeholder="XXXX-XXXX-XXXX-XXXX" oninput="formatearTarjeta(this)">
+
+        <label for="cvv">CVV (3 dígitos):</label>
+        <input type="text" id="cvv" name="cvv" maxlength="3" required oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,3)">
+
+        <label>Fecha de vencimiento:</label>
+        <div class="exp-container">
+            <input type="text" id="mes" name="mes" placeholder="MM" maxlength="2" required oninput="this.value = validarMes(this)">
+            <input type="text" id="anio" name="anio" placeholder="AAAA" maxlength="4" required oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,4)">
+        </div>
+
+        <label for="titular">Nombre del titular:</label>
+        <input type="text" id="titular" name="titular" required>
+
+        <label for="monto">Monto a abonar ($):</label>
+        <select id="monto" name="monto" required>
+            <option value="">Selecciona un monto</option>
+            <option value="5">$5</option>
+            <option value="10">$10</option>
+            <option value="20">$20</option>
+            <option value="50">$50</option>
+            <option value="100">$100</option>
+            <option value="200">$200</option>
+        </select>
+
+        <button type="submit">Abonar saldo</button>
+    </form>
+
+    <div class="message success" th:if="${mensaje}" th:text="${mensaje}"></div>
+    <div class="message error" th:if="${error}" th:text="${error}"></div>
+
+    <a class="back-button" th:href="@{/user/index}">← Volver al inicio</a>
+</div>
+
+<script>
+    function formatearTarjeta(input) {
+        let valor = input.value.replace(/\D/g, '').substring(0, 16);
+        let partes = valor.match(/.{1,4}/g);
+        input.value = partes ? partes.join('-') : '';
+    }
+
+    function validarMes(input) {
+        let valor = input.value.replace(/[^0-9]/g, '').slice(0, 2);
+        input.classList.remove('invalid');
+        if (valor.length === 2) {
+            let mes = parseInt(valor);
+            if (mes < 1 || mes > 12) {
+                alert("El mes debe estar entre 01 y 12.");
+                input.classList.add('invalid');
+                return "";
+            }
+        }
+        return valor;
+    }
+
+    function validarFormulario() {
+        const tarjeta = document.getElementById("tarjeta").value.replace(/-/g, '');
+        const cvv = document.getElementById("cvv").value;
+        const mes = document.getElementById("mes").value;
+        const anio = document.getElementById("anio").value;
+        const monto = document.getElementById("monto").value;
+
+        const hoy = new Date();
+        const mesActual = hoy.getMonth() + 1;
+        const anioActual = hoy.getFullYear();
+
+        const mesNum = parseInt(mes);
+        const anioNum = parseInt(anio);
+
+        if (tarjeta.length !== 16 || isNaN(tarjeta)) {
+            alert("La tarjeta debe tener exactamente 16 dígitos.");
+            return false;
+        }
+
+        if (cvv.length !== 3 || isNaN(cvv)) {
+            alert("El CVV debe tener exactamente 3 dígitos.");
+            return false;
+        }
+
+        if (isNaN(mesNum) || mesNum < 1 || mesNum > 12) {
+            alert("El mes debe estar entre 01 y 12.");
+            return false;
+        }
+
+        if (anio.length !== 4 || isNaN(anioNum)) {
+            alert("El año debe tener 4 dígitos numéricos.");
+            return false;
+        }
+
+        if (anioNum < anioActual || (anioNum === anioActual && mesNum < mesActual)) {
+            alert("La tarjeta está vencida.");
+            return false;
+        }
+
+        if (anioNum > 2035) {
+            alert("Año no válido. Máximo permitido: 2035.");
+            return false;
+        }
+
+        if (!["5", "10", "20", "50", "100", "200"].includes(monto)) {
+            alert("Monto no válido.");
+            return false;
+        }
+
+        return true;
+    }
+</script>
+
+</body>
+</html>

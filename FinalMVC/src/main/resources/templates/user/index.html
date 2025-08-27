@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Epic Games - Usuario</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #121212;
+            color: #fff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        aside {
+            width: 220px;
+            background: #1e1e1e;
+            padding: 20px;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 30px;
+        }
+
+        .menu a {
+            color: #ccc;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+
+        main {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .user-info {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .game-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 20px;
+        }
+
+        .game-card {
+            background: #1e1e1e;
+            border-radius: 6px;
+            overflow: hidden;
+            transition: transform .2s ease;
+            display: flex;
+            flex-direction: column;
+            min-height: 300px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
+        }
+
+        .game-card:hover {
+            transform: scale(1.02);
+        }
+
+        .game-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .game-card .info {
+            padding: 10px;
+            flex-grow: 1;
+        }
+
+        .game-card .title {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 5px;
+            line-height: 1.2;
+            word-wrap: break-word;
+            white-space: normal;
+        }
+
+        .game-card .price {
+            color: #66c0f4;
+            font-size: 13px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .add-to-cart-btn {
+            background: #007bff;
+            border: none;
+            color: #fff;
+            padding: 10px 8px;
+            width: 100%;
+            cursor: pointer;
+            font-size: 12px;
+            transition: .3s;
+            border-radius: 0 0 6px 6px;
+        }
+
+        .add-to-cart-btn:hover {
+            background: #0056b3;
+        }
+
+        .added {
+            background: #28a745 !important;
+            cursor: default;
+        }
+
+        .add-to-cart-btn[disabled] {
+            background: #888 !important;
+            cursor: not-allowed;
+        }
+
+        .cart-panel {
+            width: 300px;
+            background: #1e1e1e;
+            padding: 20px;
+            height: 100vh;
+            overflow-y: auto;
+            border-left: 1px solid #2a2a2a;
+        }
+
+        .cart-panel h3 {
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            margin-bottom: 10px;
+        }
+
+        .cart-item span {
+            max-width: 70%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .remove-btn {
+            background: none;
+            color: #f55;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            margin-left: 10px;
+        }
+
+        .cart-total {
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .checkout-btn {
+            margin-top: 10px;
+            background: #444;
+            color: #fff;
+            border: none;
+            padding: 10px;
+            width: 100%;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: .3s;
+        }
+
+        .checkout-btn:hover {
+            background: #666;
+        }
+
+        .abonar-btn {
+            background: #66c0f4;
+            color: #121212;
+            border: none;
+            padding: 8px 12px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: .3s;
+        }
+
+        .abonar-btn:hover {
+            background: #7dd3ff;
+        }
+
+        /* ✅ Estilos para toasts */
+        #toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+        }
+
+        .toast {
+            background: #333;
+            color: #fff;
+            padding: 12px 18px;
+            margin-top: 10px;
+            border-radius: 6px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all 0.4s ease;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .toast.success { background: #28a745; }
+        .toast.error { background: #dc3545; }
+    </style>
+</head>
+<body>
+<aside>
+    <div class="logo">EPIC GAMES</div>
+    <div class="menu">
+        <a th:href="@{/user/index}">Tienda</a>
+        <a th:href="@{/user/biblioteca}">Biblioteca</a>
+        <a th:href="@{/user/cambiarRolDeveloper}">Modo desarrollador</a>
+        <a th:href="@{/logout}">Cerrar sesión</a>
+    </div>
+</aside>
+
+<main>
+    <header>
+        <h1>Descubre Nuevos Juegos</h1>
+        <div class="user-info">
+            <div>
+                <div th:text="'Usuario: ' + ${username}">usuario@example.com</div>
+                <div th:with="miSaldo=${saldo != null ? saldo : 0.0}"
+                     th:text="'Saldo: $' + ${#numbers.formatDecimal(miSaldo, 1, 2)}">Saldo: $0.00</div>
+            </div>
+            <form th:action="@{/user/abonar}" method="get">
+                <button type="submit" class="abonar-btn">Abonar</button>
+            </form>
+        </div>
+    </header>
+
+    <div class="section-title">Recomendados</div>
+
+    <div class="game-grid">
+        <div th:each="producto : ${productos}" class="game-card">
+            <img th:src="${producto.imagen}" alt="Imagen del juego"
+                 onerror="this.onerror=null;this.src='https://via.placeholder.com/300x200?text=Sin+imagen';">
+            <div class="info">
+                <div class="title" th:text="${producto.titulo}">Título</div>
+                <div class="price"
+                     th:with="precioFinal=${producto.precio - (producto.precio * producto.descuento)}"
+                     th:text="'$' + ${#numbers.formatDecimal(precioFinal, 1, 2)}">$0.00</div>
+            </div>
+
+            <th:block th:if="${comprados.contains(producto.id)}">
+                <button class="add-to-cart-btn" disabled>Ya compraste este producto</button>
+            </th:block>
+            <th:block th:unless="${comprados.contains(producto.id)}">
+                <button class="add-to-cart-btn"
+                        th:attr="data-id=${producto.id}, data-nombre=${producto.titulo}, data-precio=${producto.precio - (producto.precio * producto.descuento)}"
+                        onclick="agregarAlCarrito(this)">
+                    Agregar al carrito
+                </button>
+            </th:block>
+        </div>
+    </div>
+</main>
+
+<div class="cart-panel">
+    <h3>Mi Carrito</h3>
+    <div id="cart-items"></div>
+    <div class="cart-total">Total: $<span id="cart-total">0.00</span></div>
+
+    <form id="pagoForm" th:action="@{/carrito/pagar}" method="post">
+        <input type="hidden" name="items" id="carritoOculto">
+        <button type="button" class="checkout-btn" onclick="confirmarPago()">Pagar</button>
+    </form>
+</div>
+
+<div id="toast-container"></div>
+
+<script>
+    let carrito = [];
+
+    function agregarAlCarrito(btn) {
+        const id = btn.getAttribute("data-id");
+        const nombre = btn.getAttribute("data-nombre");
+        const precio = parseFloat(btn.getAttribute("data-precio"));
+        const existe = carrito.find(item => item.id === id);
+        if (existe) return mostrarToast("Este juego ya está en el carrito.", "error");
+        carrito.push({id, nombre, precio});
+        renderizarCarrito();
+        btn.textContent = "Ya en el carrito";
+        btn.classList.add("added");
+        btn.disabled = true;
+    }
+
+    function eliminarDelCarrito(id) {
+        carrito = carrito.filter(item => item.id !== id);
+        renderizarCarrito();
+        const btn = document.querySelector(`.add-to-cart-btn[data-id='${id}']`);
+        if (btn) {
+            btn.textContent = "Agregar al carrito";
+            btn.classList.remove("added");
+            btn.disabled = false;
+        }
+    }
+
+    function renderizarCarrito() {
+        const contenedor = document.getElementById("cart-items");
+        contenedor.innerHTML = "";
+        let total = 0;
+        carrito.forEach(item => {
+            total += item.precio;
+            contenedor.innerHTML += `
+                <div class="cart-item">
+                    <span>${item.nombre}</span>
+                    <div>
+                        <span>$${item.precio.toFixed(2)}</span>
+                        <button class="remove-btn" onclick="eliminarDelCarrito('${item.id}')">✕</button>
+                    </div>
+                </div>`;
+        });
+        document.getElementById("cart-total").innerText = total.toFixed(2);
+    }
+
+    function confirmarPago() {
+        if (carrito.length === 0) return mostrarToast("Tu carrito está vacío.", "error");
+        if (confirm("¿Seguro que quieres comprar estos juegos?")) {
+            document.getElementById("carritoOculto").value = JSON.stringify(carrito);
+            document.getElementById("pagoForm").submit();
+        }
+    }
+
+    /* ✅ Función para mostrar toasts */
+    function mostrarToast(mensaje, tipo="success") {
+        const contenedor = document.getElementById("toast-container");
+        const toast = document.createElement("div");
+        toast.className = `toast ${tipo}`;
+        toast.textContent = mensaje;
+        contenedor.appendChild(toast);
+
+        setTimeout(() => toast.classList.add("show"), 100);
+        setTimeout(() => {
+            toast.classList.remove("show");
+            setTimeout(() => contenedor.removeChild(toast), 400);
+        }, 3000);
+    }
+</script>
+
+<div th:if="${error}">
+    <script th:inline="javascript">
+        mostrarToast([[${error}]], "error");
+    </script>
+</div>
+
+<div th:if="${success}">
+    <script th:inline="javascript">
+        mostrarToast([[${success}]], "success");
+    </script>
+</div>
+
+</body>
+</html>

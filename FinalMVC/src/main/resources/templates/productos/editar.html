@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Producto</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 40px;
+            background: #121212;
+            font-family: 'Segoe UI', sans-serif;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .form-box {
+            width: 100%;
+            max-width: 600px;
+            background: #1e1e1e;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #66c0f4;
+            font-size: 24px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 20px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        input {
+            width: 97%;
+            padding: 12px;
+            background: #2a2a2a;
+            color: #fff;
+            border: 1px solid #333;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border 0.2s;
+        }
+
+        input:focus {
+            border-color: #66c0f4;
+            outline: none;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin-top: 15px;
+            color: #ccc;
+        }
+
+        .checkbox-group input {
+            margin-right: 8px;
+            transform: scale(1.2);
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+
+        button,
+        a.volver-btn {
+            flex: 1;
+            margin: 0 5px;
+            padding: 12px;
+            font-size: 14px;
+            font-weight: bold;
+            text-align: center;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: 0.3s;
+            text-decoration: none;
+        }
+
+        button {
+            background: #66c0f4;
+            color: #121212;
+        }
+
+        button:hover {
+            background: #7dd3ff;
+        }
+
+        a.volver-btn {
+            background: #2a2a2a;
+            color: #ccc;
+        }
+
+        a.volver-btn:hover {
+            background: #333;
+        }
+    </style>
+</head>
+<body>
+
+<div class="form-box">
+    <h2>Editar Producto</h2>
+    <form th:action="@{/productos/actualizar}" method="post" th:object="${producto}">
+        <!-- ID del producto -->
+        <input type="hidden" th:field="*{id}">
+
+        <!-- Campo oculto para el origen -->
+        <input type="hidden" name="origen" th:value="${origen}">
+
+        <label>Título:
+            <input type="text" th:field="*{titulo}" required>
+        </label>
+
+        <label>Descripción:
+            <input type="text" th:field="*{descripcion}" required>
+        </label>
+
+        <label>Género:
+            <input type="text" th:field="*{genero}" required>
+        </label>
+
+        <label>Precio:
+            <input type="number" step="0.01" th:field="*{precio}" required>
+        </label>
+
+        <label>Descuento:
+            <input type="number" step="0.01" min="0" max="1" th:field="*{descuento}" required>
+        </label>
+
+        <label>URL Imagen:
+            <input type="text" th:field="*{imagen}" required>
+        </label>
+
+        <div class="checkbox-group">
+            <input type="checkbox" id="activo" th:field="*{activo}">
+            <label for="activo">Producto activo</label>
+        </div>
+
+        <div class="button-group">
+            <button type="submit">Actualizar</button>
+
+            <!-- Botón volver dinámico -->
+            <a class="volver-btn"
+               th:if="${origen == 'admin'}"
+               th:href="@{/admin/index}">← Volver a Admin</a>
+
+            <a class="volver-btn"
+               th:if="${origen != 'admin'}"
+               th:href="@{/developer/index}">← Volver a Developer</a>
+        </div>
+    </form>
+</div>
+
+</body>
+</html>

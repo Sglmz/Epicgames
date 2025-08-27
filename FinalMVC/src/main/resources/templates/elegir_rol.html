@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Elegir Rol</title>
+</head>
+<body>
+<h2>¿Cómo deseas ingresar?</h2>
+
+<form th:action="@{/cambiarRol}" method="post">
+    <label>Selecciona tu rol:</label>
+    <select name="rol">
+        <option th:each="rol : ${roles}" th:value="${rol.nombre}" th:text="${rol.nombre}">Rol</option>
+    </select>
+    <button type="submit">Ingresar</button>
+</form>
+</body>
+</html>

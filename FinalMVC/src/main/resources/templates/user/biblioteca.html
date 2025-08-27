@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Biblioteca – Epic Games</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background-color: #121212; color: #fff; margin: 0; padding: 0; display: flex; }
+        aside { width: 220px; background-color: #1e1e1e; padding: 20px; height: 100vh; }
+        .logo { font-size: 20px; font-weight: bold; margin-bottom: 30px; }
+        .menu a { color: #ccc; text-decoration: none; display: block; margin-bottom: 15px; }
+        main { flex: 1; padding: 30px; overflow-y: auto; }
+        h1 { font-size: 24px; margin-bottom: 20px; }
+        .game-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
+        .game-card { background-color: #1e1e1e; border-radius: 6px; overflow: hidden; display: flex; flex-direction: column; }
+        .game-card img { width: 100%; height: 200px; object-fit: cover; }
+        .game-card .info { padding: 10px; }
+        .game-card .title { font-size: 16px; font-weight: bold; margin-bottom: 5px; }
+        .game-card .price { color: #66c0f4; font-size: 13px; }
+    </style>
+</head>
+<body>
+
+<aside>
+    <div class="logo">EPIC GAMES</div>
+    <div class="menu">
+        <a th:href="@{/user/index}">Tienda</a>
+        <a th:href="@{/user/biblioteca}">Biblioteca</a>
+        <a th:href="@{/logout}">Cerrar sesión</a>
+    </div>
+</aside>
+
+<main>
+    <h1>Tu Biblioteca</h1>
+
+    <div class="game-grid">
+        <div th:if="${juegosComprados == null or #lists.isEmpty(juegosComprados)}">
+            <p>Aún no has comprado ningún juego.</p>
+        </div>
+
+        <div th:each="juego : ${juegosComprados}" class="game-card">
+            <img th:src="${juego.imagen}" alt="Imagen del juego"
+                 onerror="this.onerror=null;this.src='https://via.placeholder.com/300x200?text=Sin+imagen';">
+            <div class="info">
+                <div class="title" th:text="${juego.titulo}">Título del juego</div>
+                <div class="price"
+                     th:text="'$' + ${#numbers.formatDecimal(juego.precio - (juego.precio * juego.descuento), 1, 2)}">
+                    Precio
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+</body>
+</html>

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Desarrolladores</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #121212;
+            color: #fff;
+            display: flex;
+            height: 100vh;
+        }
+
+        aside {
+            width: 220px;
+            background-color: #1e1e1e;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 30px;
+        }
+
+        .menu a {
+            color: #ccc;
+            text-decoration: none;
+            margin-bottom: 15px;
+            display: block;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .menu a:hover {
+            color: #fff;
+        }
+
+        main {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .search-bar input {
+            padding: 10px 15px;
+            width: 300px;
+            border-radius: 5px;
+            border: none;
+            background-color: #2a2a2a;
+            color: #fff;
+        }
+
+        .user-options {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .user-options a {
+            color: #ccc;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .user-options a:hover {
+            color: #fff;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .store-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .store-card {
+            background-color: #1e1e1e;
+            border-radius: 10px;
+            padding: 20px;
+            transition: transform 0.3s, background-color 0.3s;
+            cursor: pointer;
+        }
+
+        .store-card:hover {
+            transform: translateY(-5px);
+            background-color: #2a2a2a;
+        }
+
+        .store-card .name {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .store-card .desc,
+        .store-card .address {
+            font-size: 14px;
+            color: #bbb;
+        }
+    </style>
+</head>
+<body>
+<aside>
+    <div>
+        <div class="logo">EPIC GAMES</div>
+        <div class="menu">
+            <a href="" style="font-weight:bold;">Desarrolladores</a>
+        </div>
+    </div>
+</aside>
+
+<main>
+    <header>
+        <div class="search-bar">
+            <input type="text" placeholder="Buscar desarrolladores...">
+        </div>
+        <div class="user-options">
+            <a th:text="${#authentication.name}">Usuario</a>
+            <a href="/logout">Cerrar sesión</a>
+        </div>
+    </header>
+
+    <div class="section-title">Gestión de Desarrolladores (Usuarios con Rol DEVELOPER)</div>
+
+    <div class="store-grid">
+        <div class="store-card"
+             th:each="usuario : ${usuarios}"
+             th:onclick="'location.href=\'/admin/productos/' + ${usuario.idUsuario} + '\''">
+            <div class="name" th:text="${usuario.nombre}">Nombre</div>
+            <div class="desc" th:text="${usuario.correo}">Correo</div>
+            <div class="address" th:text="'Username: ' + ${usuario.username}">Username</div>
+        </div>
+    </div>
+</main>
+</body>
+</html>

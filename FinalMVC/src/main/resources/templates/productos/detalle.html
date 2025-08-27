@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${producto.titulo}">Detalle</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #121212;
+            font-family: 'Segoe UI', sans-serif;
+            color: #fff;
+        }
+
+        .container {
+            display: flex;
+            padding: 40px 60px;
+            gap: 40px;
+            justify-content: center;
+        }
+
+        .left-panel {
+            flex: 3;
+        }
+
+        .left-panel img {
+            width: 100%;
+            max-width: 750px;
+            height: auto;
+            border-radius: 12px;
+        }
+
+        .thumbnail-list {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .thumbnail-list img {
+            width: 100px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 6px;
+            opacity: .7;
+            cursor: pointer;
+            transition: .3s;
+        }
+
+        .thumbnail-list img:hover {
+            opacity: 1;
+            transform: scale(1.05);
+        }
+
+        .left-panel p {
+            margin-top: 15px;
+            font-size: 14px;
+            color: #aaa;
+            max-width: 750px;
+        }
+
+        .right-panel {
+            flex: 1.5;
+            background: #1e1e1e;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 0 12px rgba(0, 0, 0, .5);
+        }
+
+        .right-panel h2 {
+            font-size: 24px;
+            color: #66c0f4;
+            margin-bottom: 10px;
+        }
+
+        .info-text p {
+            margin: 8px 0;
+            font-size: 15px;
+            color: #ccc;
+        }
+
+        .price-box {
+            margin: 20px 0;
+        }
+
+        .price-label {
+            font-size: 14px;
+            color: #aaa;
+        }
+
+        .price-value {
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 14px;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn-buy {
+            background: #66c0f4;
+            color: #121212;
+        }
+
+        .btn-buy:hover {
+            background: #7dd3ff;
+        }
+
+        .btn-secondary {
+            background: #2a2a2a;
+            color: #ccc;
+        }
+
+        .btn-secondary:hover {
+            background: #333;
+        }
+
+        .back-container {
+            text-align: center;
+            margin: 40px 0;
+        }
+
+        .back-link {
+            background: #2a2a2a;
+            color: #ccc;
+            padding: 12px 20px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .back-link:hover {
+            background: #333;
+            color: #66c0f4;
+        }
+
+        @media (max-width: 1000px) {
+            .container {
+                flex-direction: column;
+                padding: 30px;
+            }
+
+            .left-panel, .right-panel {
+                width: 100%;
+            }
+
+            .left-panel img {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="left-panel">
+        <img th:src="${producto.imagen}" alt="Imagen del producto" />
+        <div class="thumbnail-list">
+            <img th:src="${producto.imagen}" alt="thumb1" />
+            <img th:src="${producto.imagen}" alt="thumb2" />
+            <img th:src="${producto.imagen}" alt="thumb3" />
+        </div>
+        <p th:text="${producto.descripcion}"></p>
+    </div>
+
+    <div class="right-panel">
+        <h2 th:text="${producto.titulo}">Título</h2>
+
+        <div class="info-text">
+            <p><strong>Género:</strong> <span th:text="${producto.genero}">Acción</span></p>
+            <p><strong>Estado:</strong> <span th:text="${producto.activo} ? 'Disponible' : 'No disponible'"></span></p>
+        </div>
+
+        <div class="price-box">
+            <div class="price-label">Precio:</div>
+            <div class="price-value"
+                 th:with="precioFinal=${producto.precio - (producto.precio * producto.descuento)}"
+                 th:text="'$' + ${#numbers.formatDecimal(precioFinal, 1, 2)}">$0.00</div>
+        </div>
+
+        <div class="btn-group">
+            <button class="btn btn-buy">Comprar Ahora</button>
+            <button class="btn btn-secondary">Agregar al Carrito</button>
+            <button class="btn btn-secondary">Agregar a Wishlist</button>
+        </div>
+    </div>
+</div>
+
+<div class="back-container">
+    <a class="back-link" th:href="${volverA}">← Volver</a>
+</div>
+</body>
+</html>

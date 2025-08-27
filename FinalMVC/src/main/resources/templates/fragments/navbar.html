@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:fragment="navbar">
+<body>
+<nav>
+    <a th:href="@{/productos}">Inicio</a>
+
+    <span th:if="${#authorization.expression('hasRole(''DEVELOPER'')')}">
+        | <a th:href="@{/productos/nuevo}">Agregar Juego</a>
+    </span>
+
+    <span th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
+        | <a th:href="@{/admin/panel}">Admin Panel</a>
+    </span>
+
+    <span style="float: right;">
+        <a th:href="@{/logout}">Cerrar Sesión</a>
+    </span>
+</nav>
+</body>
+</html>

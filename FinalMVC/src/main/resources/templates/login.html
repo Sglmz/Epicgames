@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="#{login.titulo}">Iniciar sesión - EpicClone</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background-color: #121212;
+            font-family: 'Segoe UI', sans-serif;
+            color: #fff;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .language-switcher {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+        .language-switcher a {
+            color: #ccc;
+            margin-left: 10px;
+            font-size: 18px;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        .language-switcher a:hover { color: #66c0f4; }
+        .login-container {
+            background-color: #1e1e1e;
+            padding: 40px 30px;
+            width: 380px;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+        .login-title {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        form { display: flex; flex-direction: column; }
+        input[type="text"], input[type="password"] {
+            background-color: #2a2a2a;
+            border: none;
+            border-radius: 5px;
+            color: #fff;
+            padding: 12px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        input::placeholder { color: #999; }
+        button {
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            padding: 12px;
+            font-size: 15px;
+            font-weight: bold;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        button:hover { background-color: #289aff; }
+        .divider {
+            height: 1px;
+            background-color: #333;
+            margin: 30px 0;
+        }
+        .other-options {
+            text-align: center;
+            font-size: 13px;
+            color: #aaa;
+        }
+        .message { margin-top: 10px; font-size: 13px; text-align: center; }
+        .message p { margin: 0; }
+        .logo { text-align: center; margin-bottom: 20px; }
+        .logo img { width: 60px; height: auto; }
+    </style>
+</head>
+<body>
+
+<!-- 🌐 Selector de idioma -->
+<div class="language-switcher">
+    🌐
+    <a href="?lang=es" title="Español">ES</a>
+    <a href="?lang=en" title="English">EN</a>
+    <a href="?lang=fr" title="Français">FR</a>
+</div>
+
+<div class="login-container">
+    <div class="logo">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/Epic_Games_logo.svg/768px-Epic_Games_logo.svg.png" alt="Epic Logo">
+    </div>
+
+    <div class="login-title" th:text="#{login.titulo}">Iniciar sesión con tu cuenta</div>
+
+    <!-- ✅ Formulario de login -->
+    <form th:action="@{/login}" method="post">
+        <input type="text" id="username" name="username" th:placeholder="#{login.usuario}" required>
+        <input type="password" id="password" name="password" th:placeholder="#{login.clave}" required>
+        <button type="submit" th:text="#{login.boton}">Continuar</button>
+    </form>
+
+    <!-- ✅ Mensajes -->
+    <div class="message" th:if="${param.error}">
+        <p style="color: #ff4c4c;" th:text="#{login.error}">Credenciales incorrectas</p>
+    </div>
+    <div class="message" th:if="${param.logout}">
+        <p style="color: #66ff66;" th:text="#{login.logout}">Sesión cerrada correctamente</p>
+    </div>
+    <div class="message" th:if="${param.registered}">
+        <p style="color: #66ff66;">[[#{register.exito}]]</p>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="other-options">
+        <span th:text="#{login.primera.vez}">¿Primera vez aquí?</span>
+        <a th:href="@{/register}" style="color:#66c0f4; text-decoration:none" th:text="#{login.crear.cuenta}">Crear cuenta</a>
+    </div>
+</div>
+
+</body>
+</html>
